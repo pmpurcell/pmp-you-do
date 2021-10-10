@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import getTodos from '../api/data/todoData';
+import { getTodos } from '../api/data/todoData';
+import TodoComponent from '../components/TodoComponent';
+import TodoForm from '../components/TodoForm';
 
 function Initialize() {
-  const [todo, setTodo] = useState([]);
+  const [todos, setTodo] = useState([]);
   useEffect(() => {
     getTodos().then(setTodo);
   }, []);
 
-  console.warn(todo);
+  console.warn(todos);
 
   return (
     <>
       <h1>Hello World!</h1>
+      <TodoForm />
       {
-        todo.map((item) => <h3 key={item.name}>{item.name}</h3>)
+        todos.map((todo) => <TodoComponent todo={todo} />)
       }
     </>
   );
