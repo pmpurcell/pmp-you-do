@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { createTodos } from '../api/data/todoData';
 
-export default function TodoForm({ obj = {} }) {
+export default function TodoForm({ obj = {}, setArray }) {
   const [formInput, setFormInput] = useState({
     name: obj.name || '',
-    id: obj.id || '',
   });
 
   const handleChange = (e) => {
@@ -17,14 +16,14 @@ export default function TodoForm({ obj = {} }) {
 
   const handleClick = (e) => {
     e.preventDefault();
-    createTodos(formInput);
+    createTodos(formInput).then(setArray);
   };
   console.warn(setFormInput);
   return (
     <>
       <form>
         <label htmlFor="name">Name
-          <input name="name" id="name" value={formInput.name} onChange={(e) => handleChange(e)} required />
+          <input name="name" id="name" value={formInput.name} onChange={handleChange} required />
         </label>
         <button type="submit" onClick={(e) => handleClick(e)}>Submit</button>
       </form>
@@ -35,6 +34,6 @@ export default function TodoForm({ obj = {} }) {
 TodoForm.propTypes = {
   obj: PropTypes.shape({
     name: PropTypes.string,
-    id: PropTypes.string,
   }).isRequired,
+  setArray: PropTypes.func.isRequired,
 };

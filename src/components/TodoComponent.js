@@ -6,7 +6,7 @@ export default function TodoComponent({ todo }) {
   return (
     <Alert>
       <Button type="button" color="success">complete</Button>
-      {todo.name}
+      <p key={todo.name}>{todo.name}</p>
       <Button type="button" color="danger">delete</Button>
     </Alert>
   );

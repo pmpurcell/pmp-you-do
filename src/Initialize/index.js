@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getTodos } from '../api/data/todoData';
-import TodoComponent from '../components/TodoComponent';
 import TodoForm from '../components/TodoForm';
+import TodoList from '../components/TodoList';
 
 function Initialize() {
   const [todos, setTodo] = useState([]);
@@ -14,10 +14,8 @@ function Initialize() {
   return (
     <>
       <h1>Hello World!</h1>
-      <TodoForm />
-      {
-        todos.map((todo) => <TodoComponent todo={todo} />)
-      }
+      <TodoForm setArray={setTodo} />
+      <TodoList array={todos} setArray={setTodo} />
     </>
   );
 }

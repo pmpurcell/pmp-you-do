@@ -4,16 +4,20 @@ import firebaseConfig from '../apiKeys';
 const baseUrl = firebaseConfig.databaseURL;
 
 const getTodos = () => new Promise((resolve, reject) => {
-  axios.get(`${baseUrl}/todos.json`)
+  axios
+    .get(`${baseUrl}/todos.json`)
     .then((response) => resolve(Object.values(response.data)))
-    .catch((reject));
+    .catch(reject);
 });
 
 const createTodos = (obj) => new Promise((resolve, reject) => {
-  axios.post(`${baseUrl}/todos.json`, obj)
+  axios
+    .post(`${baseUrl}/todos.json`, obj)
     .then((response) => {
       const firebaseKey = response.data.name;
-      axios.patch(`{${baseUrl}/todos/${firebaseKey}.json}`, { firebaseKey })
+      axios
+        .patch(`${baseUrl}/todos/${response.data.name}.json`,
+          { firebaseKey })
         .then(() => {
           getTodos().then(resolve);
         });
