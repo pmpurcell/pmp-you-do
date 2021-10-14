@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { createTodos, updateTodo } from '../api/data/todoData';
 
@@ -52,11 +53,11 @@ export default function TodoForm({ obj = {}, setArray, setEditItem }) {
 
   return (
     <>
-      <form>
-        <label htmlFor="name">Name
+      <form id="todoForm">
+        <label htmlFor="name">
           <input name="name" id="name" value={formInput.name} onChange={handleChange} required />
         </label>
-        <button type="submit" onClick={(e) => handleClick(e)}>{obj.firebaseKey ? 'UPDATE' : 'SUBMIT'}</button>
+        <Button type="submit" color="success" onClick={(e) => handleClick(e)}>{obj.firebaseKey ? 'UPDATE' : 'SUBMIT'}</Button>
       </form>
     </>
   );
