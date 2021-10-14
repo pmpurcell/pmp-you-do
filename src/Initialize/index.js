@@ -5,17 +5,18 @@ import TodoList from '../components/TodoList';
 
 function Initialize() {
   const [todos, setTodo] = useState([]);
+  const [editItem, setEditItem] = useState({});
+
   useEffect(() => {
     getTodos().then(setTodo);
   }, []);
 
-  console.warn(todos);
-
   return (
     <>
-      <h1>Hello World!</h1>
-      <TodoForm setArray={setTodo} />
-      <TodoList array={todos} setArray={setTodo} />
+      <h1>You-Do!</h1>
+      <p>Do the thing!</p>
+      <TodoForm obj={editItem} setArray={setTodo} setEditItem={setEditItem} />
+      <TodoList array={todos} setArray={setTodo} setEditItem={setEditItem} />
     </>
   );
 }

@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { createTodos } from '../api/data/todoData';
+import { createTodos, updateTodo } from '../api/data/todoData';
 
-export default function TodoForm({ obj = {}, setArray }) {
-  const [formInput, setFormInput] = useState({
-    name: obj.name || '',
-  });
+const initialState = {
+  name: '',
+  isComplete: false,
+  uid: '',
+};
+
+export default function TodoForm({ obj = {}, setArray, setEditItem }) {
+  const [formInput, setFormInput] = useState(initialState);
+
+  useEffect(() => {
+    if (obj.firebaseKey) {
+      setFormInput({
+        name: obj.name,
+        firebaseKey: obj.firebaseKey,
+        isComplete: obj.isComplete,
+        uid: obj.uid,
+      });
+    }
+    // DEPENDENCY ARRAY WATCHES FOR obj TO CHANGE
+  }, [obj]);
 
   const handleChange = (e) => {
     setFormInput((prevState) => ({
@@ -14,18 +30,33 @@ export default function TodoForm({ obj = {}, setArray }) {
     }));
   };
 
+  const resetForm = () => {
+    setFormInput(initialState);
+    setEditItem({});
+  };
+
   const handleClick = (e) => {
     e.preventDefault();
-    createTodos(formInput).then(setArray);
+    if (obj.firebaseKey) {
+      updateTodo(formInput).then((todo) => {
+        setArray(todo);
+        resetForm();
+      });
+    } else {
+      createTodos(formInput).then((todo) => {
+        setArray(todo);
+        resetForm();
+      });
+    }
   };
-  console.warn(setFormInput);
+
   return (
     <>
       <form>
         <label htmlFor="name">Name
           <input name="name" id="name" value={formInput.name} onChange={handleChange} required />
         </label>
-        <button type="submit" onClick={(e) => handleClick(e)}>Submit</button>
+        <button type="submit" onClick={(e) => handleClick(e)}>{obj.firebaseKey ? 'UPDATE' : 'SUBMIT'}</button>
       </form>
     </>
   );
@@ -34,6 +65,12 @@ export default function TodoForm({ obj = {}, setArray }) {
 TodoForm.propTypes = {
   obj: PropTypes.shape({
     name: PropTypes.string,
-  }).isRequired,
+    isComplete: PropTypes.bool,
+  }),
   setArray: PropTypes.func.isRequired,
+  setEditItem: PropTypes.func.isRequired,
+};
+
+TodoForm.defaultProps = {
+  obj: { },
 };
