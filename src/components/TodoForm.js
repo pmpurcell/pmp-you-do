@@ -44,7 +44,7 @@ export default function TodoForm({ obj = {}, setArray, setEditItem }) {
         resetForm();
       });
     } else {
-      createTodos(formInput).then((todo) => {
+      createTodos({...formInput, date: new Date()}).then((todo) => {
         setArray(todo);
         resetForm();
       });
@@ -67,6 +67,8 @@ TodoForm.propTypes = {
   obj: PropTypes.shape({
     name: PropTypes.string,
     isComplete: PropTypes.bool,
+    date: PropTypes.string,
+    firebaseKey: PropTypes.string,
   }),
   setArray: PropTypes.func.isRequired,
   setEditItem: PropTypes.func.isRequired,
