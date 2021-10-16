@@ -44,7 +44,7 @@ export default function TodoForm({ obj = {}, setArray, setEditItem }) {
         resetForm();
       });
     } else {
-      createTodos({...formInput, date: new Date()}).then((todo) => {
+      createTodos({ ...formInput, date: new Date() }).then((todo) => {
         setArray(todo);
         resetForm();
       });
