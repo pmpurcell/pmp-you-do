@@ -5,7 +5,13 @@ export default function Completed() {
   const [completeTodos, setCompleteTodos] = useState([]);
 
   useEffect(() => {
-    getCompletedTodos().then(setCompleteTodos);
+    let isMounted = true;
+    getCompletedTodos().then((todoArray) => {
+      if (isMounted) setCompleteTodos(todoArray);
+    });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleClick = (key) => {
