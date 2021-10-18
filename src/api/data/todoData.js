@@ -3,10 +3,21 @@ import firebaseConfig from '../apiKeys';
 
 const baseUrl = firebaseConfig.databaseURL;
 
-const getTodos = () => new Promise((resolve, reject) => {
+const getTodos = (value) => new Promise((resolve, reject) => {
   axios
-    .get(`${baseUrl}/todos.json?orderBy="isComplete"&equalTo=false`)
-    .then((response) => resolve(Object.values(response.data || { })))
+    .get(`${baseUrl}/todos.json?orderBy="isComplete"&equalTo=${value}`)
+    .then((response) => resolve(Object.values(response.data || {})))
+    .catch(reject);
+});
+
+const getCompletedTodos = () => new Promise((resolve, reject) => {
+  getTodos(true).then(resolve).catch(reject);
+});
+
+const getAllTodos = () => new Promise((resolve, reject) => {
+  axios
+    .get(`${baseUrl}/todos.json`)
+    .then((response) => resolve(Object.values(response.data || {})))
     .catch(reject);
 });
 
@@ -16,24 +27,32 @@ const createTodos = (obj) => new Promise((resolve, reject) => {
     .then((response) => {
       const firebaseKey = response.data.name;
       axios
-        .patch(`${baseUrl}/todos/${response.data.name}.json`,
-          { firebaseKey })
+        .patch(`${baseUrl}/todos/${response.data.name}.json`, { firebaseKey })
         .then(() => {
-          getTodos().then(resolve);
+          getTodos(false).then(resolve);
         });
     })
     .catch(reject);
 });
 
 const deleteTodo = (firebaseKey) => new Promise((resolve, reject) => {
-  axios.delete(`${baseUrl}/todos/${firebaseKey}.json`)
-    .then(() => getTodos().then(resolve))
+  axios
+    .delete(`${baseUrl}/todos/${firebaseKey}.json`)
+    .then(() => getTodos(false).then(resolve))
+    .catch(reject);
+});
+
+const deleteCompleteTodo = (firebaseKey) => new Promise((resolve, reject) => {
+  axios
+    .delete(`${baseUrl}/todos/${firebaseKey}.json`)
+    .then(() => getCompletedTodos().then(resolve))
     .catch(reject);
 });
 
 const updateTodo = (todoObj) => new Promise((resolve, reject) => {
-  axios.patch(`${baseUrl}/todos/${todoObj.firebaseKey}.json`, todoObj)
-    .then(() => getTodos().then(resolve))
+  axios
+    .patch(`${baseUrl}/todos/${todoObj.firebaseKey}.json`, todoObj)
+    .then(() => getTodos(false).then(resolve))
     .catch(reject);
 });
 
@@ -42,4 +61,7 @@ export {
   createTodos,
   deleteTodo,
   updateTodo,
+  getCompletedTodos,
+  deleteCompleteTodo,
+  getAllTodos,
 };
